@@ -1,0 +1,36 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+
+[[mods]]
+modId="fullbright_for_embeddium"
+version="1.0.0"
+displayName="Fullbright for Embeddium"
+authors="Antigravity"
+description='''
+A toggleable fullbright mod for Minecraft Forge 1.20.1 designed specifically to work with Embeddium by intercepting its chunk lighting calculation pipeline.
+'''
+
+[[dependencies.fullbright_for_embeddium]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.fullbright_for_embeddium]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.21)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.fullbright_for_embeddium]]
+modId="embeddium"
+mandatory=true
+versionRange="[0.3.0,)"
+ordering="NONE"
+side="CLIENT"
+
+[[mixins]]
+config = "fullbright_for_embeddium.mixins.json"

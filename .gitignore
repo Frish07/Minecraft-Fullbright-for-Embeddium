@@ -1,0 +1,32 @@
+# Gradle caches and build output
+.gradle/
+build/
+out/
+
+# Forge development instances
+/run/
+/runs/
+
+# IDE files
+/.idea/
+/.vscode/
+/.settings/
+/.classpath
+/.project
+/.factorypath
+*.iml
+*.ipr
+*.iws
+
+# Local configuration and logs
+.env
+.env.*
+!.env.example
+*.log
+hs_err_pid*
+replay_pid*
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini

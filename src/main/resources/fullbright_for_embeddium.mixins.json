@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "fullbright_for_embeddium.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "fullbright_for_embeddium.refmap.json",
+  "mixins": [
+    "MixinOptionInstance"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

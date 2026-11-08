@@ -1,0 +1,84 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '6.0.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+group = 'fullbright_for_embeddium'
+version = '1.0.0'
+
+java {
+    archivesBaseName = 'fullbright_for_embeddium'
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+
+    copyIdeResources = true
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'fullbright_for_embeddium'
+            mods {
+                fullbright_for_embeddium {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com"
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.1.3'
+
+    // Compile against and run with Embeddium
+    compileOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
+    runtimeOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
+
+    // Mixin annotation processor
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+    add sourceSets.main, "fullbright_for_embeddium.refmap.json"
+    config "fullbright_for_embeddium.mixins.json"
+}
+
+tasks.named('compileJava', JavaCompile) {
+    options.compilerArgs << "-AimapObfName=srg"
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "Fullbright for Embeddium",
+                "Specification-Vendor"    : "Antigravity",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.version,
+                "Implementation-Vendor"   : "Antigravity",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "fullbright_for_embeddium.mixins.json"
+        ])
+    }
+    finalizedBy 'reobfJar'
+}

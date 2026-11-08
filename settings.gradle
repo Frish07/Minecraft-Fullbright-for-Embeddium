@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net/' }
+        gradlePluginPortal()
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    }
+}
+
+rootProject.name = 'fullbright_for_embeddium'
