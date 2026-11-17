@@ -122,7 +122,7 @@ def main():
     subprocess.run([java_tool("javac"), "--release", "17", "-proc:none", "-cp", cp + os.pathsep + str(classes),
                     "-d", str(classes), str(source / "fullbright" / "port" / "BuildPorts.java")], check=True)
     subprocess.run([java_tool("java"), "-Xmx1g", "-cp", cp + os.pathsep + str(classes), "fullbright.port.BuildPorts",
-                    str(WORK), str(OUTPUT)], check=True)
+                    str(WORK), str(OUTPUT), str(ROOT / "ports" / "asm-license.txt")], check=True)
 
     manifest = []
     for version, mode, java_version in builds:

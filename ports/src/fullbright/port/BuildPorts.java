@@ -33,12 +33,14 @@ public final class BuildPorts implements Opcodes {
     public static void main(String[] arguments) throws Exception {
         Path work = Paths.get(arguments[0]);
         Path output = Paths.get(arguments[1]);
+        byte[] asmLicense = Files.readString(Paths.get(arguments[2]), StandardCharsets.UTF_8)
+                .replace("\r\n", "\n").getBytes(StandardCharsets.UTF_8);
         Files.createDirectories(output);
         int failures = 0;
         for (String row : Files.readAllLines(work.resolve("build.tsv"), StandardCharsets.UTF_8)) {
             String[] cells = row.split("\t", -1);
             try {
-                build(work, output, cells[0], cells[1]);
+                build(work, output, cells[0], cells[1], asmLicense);
             } catch (Exception error) {
                 System.err.println("Failed Minecraft " + cells[0]);
                 error.printStackTrace();
@@ -50,7 +52,7 @@ public final class BuildPorts implements Opcodes {
         }
     }
 
-    private static void build(Path work, Path output, String version, String mode) throws Exception {
+    private static void build(Path work, Path output, String version, String mode, byte[] asmLicense) throws Exception {
         Path cache = work.resolve("data");
         boolean agent = mode.equals("java-agent");
         Path client = cache.resolve(version + ".jar");
@@ -126,6 +128,7 @@ public final class BuildPorts implements Opcodes {
                 }
                 if (agent) {
                     add(jar, "META-INF/MANIFEST.MF", "Manifest-Version: 1.0\r\nPremain-Class: fullbright.port.Agent\r\n\r\n");
+                    add(jar, "META-INF/licenses/ASM.txt", asmLicense);
                     embedAsm(jar, cache.resolve("asm-9.10.1.jar"));
                     embedAsm(jar, cache.resolve("asm-tree-9.10.1.jar"));
                 } else {
@@ -276,8 +279,6 @@ public final class BuildPorts implements Opcodes {
                 String name = entry.getName();
                 if (name.startsWith("org/objectweb/asm/") && name.endsWith(".class")) {
                     add(output, PACKAGE + "internal/" + name, shade(read(jar, entry)));
-                } else if (name.equals("META-INF/LICENSE")) {
-                    add(output, "META-INF/licenses/" + dependency.getFileName() + ".txt", read(jar, entry));
                 }
             }
         }
