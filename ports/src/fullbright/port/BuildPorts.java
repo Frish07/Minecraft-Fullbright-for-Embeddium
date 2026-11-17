@@ -109,10 +109,12 @@ public final class BuildPorts implements Opcodes {
                 String event = Lighting.keyEventClass(key);
                 String accessor = event.isEmpty() ? "" : keyAccessor(vanilla, event);
                 accessor = event.isEmpty() ? "" : names.mapMethodName(event, accessor, "()I");
-                Lighting.patchKeyboard(keyHook, accessor);
+                int toggleKey = toggleKey(vanilla);
+                Lighting.patchKeyboard(keyHook, accessor, toggleKey);
                 verify(keyboardTarget, keyHook);
                 settings(metadata, "keyboard", keyboardTarget, keyHook);
                 metadata.append("keyboard.accessor=").append(accessor).append('\n');
+                metadata.append("keyboard.key=").append(toggleKey).append('\n');
             } else {
                 metadata.append("keyboard.class=\n");
             }
@@ -179,6 +181,19 @@ public final class BuildPorts implements Opcodes {
             }
         }
         throw new IllegalStateException("Key event record accessor missing: " + eventName);
+    }
+
+    private static int toggleKey(ZipFile client) throws IOException {
+        ZipEntry constants = client.getEntry("com/mojang/blaze3d/platform/InputConstants.class");
+        if (constants != null) {
+            ClassNode input = parse(read(client, constants));
+            for (FieldNode field : input.fields) {
+                if (field.name.equals("KEY_G") && field.value instanceof Integer) {
+                    return (Integer) field.value;
+                }
+            }
+        }
+        return 71; // GLFW_KEY_G on the obfuscated GLFW-based clients
     }
 
     private static void verify(ClassNode owner, MethodNode method) throws Exception {

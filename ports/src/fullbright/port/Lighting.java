@@ -39,7 +39,7 @@ public final class Lighting implements Opcodes {
         return null;
     }
 
-    public static void patchKeyboard(MethodNode method, String keyAccessor) {
+    public static void patchKeyboard(MethodNode method, String keyAccessor, int keyCode) {
         InsnList code = new InsnList();
         if (method.desc.equals("(JIIII)V")) {
             code.add(new VarInsnNode(ILOAD, 3));
@@ -50,7 +50,8 @@ public final class Lighting implements Opcodes {
             code.add(new MethodInsnNode(INVOKEVIRTUAL, keyEvent, keyAccessor, "()I", false));
             code.add(new VarInsnNode(ILOAD, 3));
         }
-        code.add(new MethodInsnNode(INVOKESTATIC, TOGGLE, "key", "(II)V", false));
+        code.add(new LdcInsnNode(keyCode));
+        code.add(new MethodInsnNode(INVOKESTATIC, TOGGLE, "key", "(III)V", false));
         method.instructions.insert(code);
     }
 

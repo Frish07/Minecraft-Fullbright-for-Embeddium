@@ -13,8 +13,8 @@ public final class Toggle {
         keyDown = pressed;
     }
 
-    public static void key(int key, int action) {
-        if (key == 71 && action == 1) {
+    public static void key(int key, int action, int toggleKey) {
+        if (key == toggleKey && action == 1) {
             toggle();
         }
     }

@@ -28,7 +28,8 @@ public final class Port {
         if (owner.name.equals(settings.getProperty("lightmap.class"))) {
             Lighting.patchLightmap(owner, method(owner, "lightmap"), settings.getProperty("keyboard.class").isEmpty());
         } else if (owner.name.equals(settings.getProperty("keyboard.class"))) {
-            Lighting.patchKeyboard(method(owner, "keyboard"), settings.getProperty("keyboard.accessor"));
+            Lighting.patchKeyboard(method(owner, "keyboard"), settings.getProperty("keyboard.accessor"),
+                    Integer.parseInt(settings.getProperty("keyboard.key")));
         }
     }
 
